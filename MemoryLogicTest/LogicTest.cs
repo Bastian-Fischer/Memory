@@ -9,32 +9,70 @@ namespace MemoryLogicTest
     {
 
         /* Ablauf 1-Spieler.
-         * ______________________________
-         * # Neues Spiel starten.
-         * # Anzahl der Karten festlegen.
+         * [TODO]
+         * Test ob das Game verloren ist nach einem GameOver-Zug.
+         * Test ob das Game gewonnen ist nach einem Zug.
+         * Test ob nach Game Win oder Lose keine weiteren Züge möglich sind.
+         * [Optional] 
+         * Wenn Max Zeit der Runde ereicht und nicht 2 Karten aufgedeckt, ausgewählte Karten umdrehen und ein Leben abzug.
          * Rundenbasiert mit Zeit???
-         * # Spielfeld erzeugen.
-         * Zufällige Kartenanordnung
-         * # Nicht weniger als 3 Paare.
-         * # Pargröße nicht kleiner als 2.
-         * # Anfangs alle Karten verdeckt.
-         * # Anfangs keine Karte auf finish.
-         * # Anzahl der Karten pro Paar korrekt
-         * Runde zuende nach erfolgreichen aufdecken.
-         * Rundenbasiertes aufdecken.
+         * Ende des Spiels Speichern mit Punkteanzeige
+         * Wenn max Karten pro Runde vor Zeitablauf aufgedeckt dann Prozentuale Bonuspunkte für den Zug
+         * Wenn alle aufgedeckten Karten gleich, dann ein Punkteverteilung und Karten aufgedeckt lassen.
+         * [Erledigt]
          * Am Anfang jeder Runde nur die schon aufgedeckten Pärchen aufgedeckt anzeigen.
          * Wenn 1 Karte ausgewählt, Karte 1 aufdecken.
-         * Wenn 2 Karte ausgewählt, Karte 2 sichtbar machen und prüfen ob Karte 1 = Karte 2.
-         * Wenn Karte 1 oder 2 schon einmal Aufgedeckt wurde, dann abzug eines Lebens
-         * Wenn Karte 1 u. 2 gleich, dann ein Punkt und Karten aufgedeckt lassen.
-         * Wenn Karte 1 u. 2 ungleich beide Karten verdecken.
-         * Wenn Max Zeit der Runde ereicht und nicht 2 Karten aufgedeckt, ausgewählte Karten umdrehen und ein Leben abzug.
-         * Wenn 2 Karten vor Zeitablauf aufgedeckt dann Prozentuale Bonuspunkte für den Zug
+         * Wenn alle aufgedeckten Karten ungleich Karten verdecken.
+         * Leben nicht unter 1 einstellbar
          * Gewonnen wenn alle Karten aufgedeckt.
-         * 
          * Spieler hat verloren wenn alle Leben weg.
-         * Ende des Spiels Speichern mit Punkteanzeige
+         * Zufällige Kartenanordnung
+         * Wenn 2 Karte ausgewählt, Karte 2 sichtbar machen und prüfen ob Karte 1 = Karte 2.
+         * Wenn eine Karte ein zweites mahl oder öfter, aufgedeckt wird ohne erfolgreichen Zug, dann abzug eines Lebens
+         * Neues Spiel starten.
+         * Nicht weniger als 3 Paare.
+         * Pargröße nicht kleiner als 2.
+         * Anfangs alle Karten verdeckt.
+         * Anfangs keine Karte auf finish.
+         * Anzahl der Karten pro Paar korrekt
+         * Runde zuende nach erfolgreichen aufdecken.
+         * Rundenbasiertes aufdecken.
+         * Anzahl der Karten festlegen.
+         * Spielfeld erzeugen.
          */
+
+        [TestMethod]
+        public void LiveNotUnderOneOnStart()
+        {
+            Logic l = new(5,2,0);
+            Assert.IsTrue(l.Live > 0);
+        }
+        [TestMethod]
+        public void LiveDeductionAfterUseCardAgain() {
+            Logic l = new(10,2,5);
+            int CardPositionA = 0;
+            int CardPositionB = 0;
+            int CardPositionC = 0;
+            for (int counter = 0; counter < l.Gamefield.Length; counter++)
+            {
+                if (l.Gamefield[counter].CardId == 1)
+                {
+                    if (l.Gamefield[counter].CardId != l.Gamefield[CardPositionA].CardId && CardPositionB == 0)
+                    {
+                        CardPositionB = counter;
+                    }
+                    else if (l.Gamefield[counter].CardId != l.Gamefield[CardPositionA].CardId && l.Gamefield[counter].CardId != l.Gamefield[CardPositionB].CardId)
+                    {
+                        CardPositionC = counter;
+                    }
+                }
+            }
+            l.TurnStep(CardPositionA);
+            l.TurnStep(CardPositionB);
+            l.TurnStep(CardPositionB);
+            l.TurnStep(CardPositionC);
+            Assert.IsTrue(l.Live < 5);
+        }
         [TestMethod]
         public void PairVisibleAfterTurn() {
             Logic l = new(3,2);
@@ -50,8 +88,8 @@ namespace MemoryLogicTest
                     }
                 } 
             }
-            l.Turn(CardPositionA);
-            l.Turn(CardPositionB);
+            l.TurnStep(CardPositionA);
+            l.TurnStep(CardPositionB);
             Assert.IsTrue(l.Gamefield[CardPositionA].Visibility);
             Assert.IsTrue(l.Gamefield[CardPositionB].Visibility);
         }
@@ -75,10 +113,52 @@ namespace MemoryLogicTest
                     }
                 }
             }
-            l.Turn(CardPositionA);
-            l.Turn(CardPositionB);
+            l.TurnStep(CardPositionA);
+            l.TurnStep(CardPositionB);
             Assert.IsTrue(l.Gamefield[CardPositionA].Finished);
             Assert.IsTrue(l.Gamefield[CardPositionB].Finished);
+        }
+        [TestMethod]
+        public void TurnResultAfterFinishedIsPairFinished()
+        {
+            Logic l = new(3, 2);
+            int CardPositionA = -1;
+            int CardPositionB = -1;
+            for (int counter = 0; counter < l.Gamefield.Length; counter++)
+            {
+                if (l.Gamefield[counter].CardId == 1)
+                {
+                    if (CardPositionA == -1)
+                    {
+                        CardPositionA = counter;
+                    }
+                    else
+                    {
+                        CardPositionB = counter;
+                    }
+                }
+            }
+            l.TurnStep(CardPositionA);
+            Assert.IsTrue(TurnResult.PairFinished == l.TurnStep(CardPositionB));            
+        }
+        [TestMethod]
+        public void TurnResultEndWithTurnFinished()
+        {
+            Logic l = new(3, 2);
+            int CardPositionA = 0;
+            int CardPositionB = 1;
+            for (int counter = 0; counter < l.Gamefield.Length; counter++)
+            {
+                if (l.Gamefield[counter].CardId == 1)
+                {
+                    if (l.Gamefield[counter].CardId != l.Gamefield[CardPositionA].CardId)
+                    {
+                        CardPositionB = counter;
+                    }
+                }
+            }
+            l.TurnStep(CardPositionA);
+            Assert.IsTrue(TurnResult.TurnFinished == l.TurnStep(CardPositionB));
         }
         [TestMethod]
         public void Createable()
@@ -155,8 +235,7 @@ namespace MemoryLogicTest
                     
                 }
                 Assert.IsTrue(cardPerPairCounter == pairSize);
-            }
-            
+            }   
         }
         [TestMethod]
         public void GamefieldIsRandomized() {
@@ -178,6 +257,52 @@ namespace MemoryLogicTest
             }
             
             Assert.IsTrue(directPairCount < (trys * pairs)/divisor);
+        }
+        [TestMethod]
+        public void AfterRoundAllFinishedCardsAreVisible() {
+            Logic l = new(3, 2);
+            int CardPositionA = -1;
+            int CardPositionB = -1;
+            int CardPositionC = -1;
+            int CardPositionD = -1;
+            for (int counter = 0; counter < l.Gamefield.Length; counter++)
+            {
+                if (l.Gamefield[counter].CardId == 1)
+                {
+                    if (CardPositionA == -1)
+                    {
+                        CardPositionA = counter;
+                    }
+                    else
+                    {
+                        CardPositionB = counter;
+                    }
+                }
+                if (l.Gamefield[counter].CardId == 2)
+                {
+                    if (CardPositionC == -1)
+                    {
+                        CardPositionC = counter;
+                    }
+                    else
+                    {
+                        CardPositionD = counter;
+                    }
+                }
+            }
+            l.TurnStep(CardPositionA);
+            l.TurnStep(CardPositionB);
+            l.TurnStep(CardPositionC);
+            l.TurnStep(CardPositionD);
+
+            for (int counter = 0; counter < l.Gamefield.Length; counter++)
+            {
+                if (counter == CardPositionA || counter == CardPositionB ||  
+                    counter == CardPositionC || counter == CardPositionD )
+                    Assert.IsTrue(l.Gamefield[counter].Visibility);
+                else
+                    Assert.IsTrue(!l.Gamefield[counter].Visibility);
+            }
         }
     }
 }

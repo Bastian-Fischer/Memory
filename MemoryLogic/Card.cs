@@ -49,5 +49,11 @@
         private void Flip() {
             mVisibility = !mVisibility;
         }
+        public void SetInvisible() {
+            mVisibility = false;
+        }
+        public void SetFinished() {
+            mFinished = true;
+        }
     }
 }
