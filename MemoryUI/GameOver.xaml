@@ -1,0 +1,46 @@
+﻿<Page x:Class="MemoryUI.GameOver"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:MemoryUI"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="GameOver">
+
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="4*"/>
+            <RowDefinition Height="5*"/>
+        </Grid.RowDefinitions>
+        <Grid x:Name="BackgroundField" HorizontalAlignment="center" Grid.Row="0" Grid.RowSpan="4"/>
+        <Label x:Name="GameOverTitle" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Algerian" FontSize="72"/>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,5">
+            <Button x:Name="reset" Content="RESET" Width="100" Click="reset_Click"></Button>
+            <Separator Width="20" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5" >
+                <Separator.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="90"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Separator.RenderTransform>
+            </Separator>
+            <Button x:Name="back" Content="BACK" Width="100" Click="back_Click"/>
+
+
+        </StackPanel>
+        <StackPanel HorizontalAlignment="Center" Grid.Row="2" VerticalAlignment="Bottom">
+            <Button Content="GET SCORE" x:Name="getScore" Click="getScore_Click"/>
+            <Label Content="Score: 0" x:Name="ScoreLabel"  FontFamily="BankGothic Lt BT" FontSize="36"/>
+        </StackPanel>
+            <StackPanel x:Name="ScoreList" Grid.Row="3" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+    </Grid>
+</Page>

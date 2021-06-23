@@ -23,6 +23,7 @@ namespace MemoryUI
         public MainWindow()
         {
             InitializeComponent();
+            MainFrame.Navigate(new MainMenuPage(MainFrame));
         }
     }
 }

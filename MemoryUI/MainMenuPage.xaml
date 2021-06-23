@@ -1,0 +1,70 @@
+﻿<Page x:Class="MemoryUI.MainMenuPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:MemoryUI"
+      mc:Ignorable="d" 
+      d:DesignHeight="600" d:DesignWidth="900"
+      Title="MainMenuPage">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel x:Name="MenuList"  Grid.Column="0" Grid.Row="0" Grid.RowSpan="5" VerticalAlignment="Top">
+            <Button Click="Button_Click">
+                <Label Content="Start Game"/>
+            </Button>
+            <Button Click="Button_Click_1">
+                <Label Content="Quit"/>
+            </Button>
+        </StackPanel>
+        <StackPanel x:Name="Settings"  Grid.Column="1" Grid.Row="0" Grid.RowSpan="3" Grid.ColumnSpan="2" VerticalAlignment="Top" Margin="5">
+            <Label Content="SETTINGS"  Grid.Column="1" HorizontalContentAlignment="Center" FontSize="20" FontFamily="Algerian" Margin="0,0,0,0"  />
+            <Separator Margin="0,10,0,10"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="ButtonEASY" Grid.Column="0" Content="EASY" Click="ButtonEASY_Click"/>
+                <Button x:Name="ButtonNORMAL" Grid.Column="1" Content="NORMAL" Click="ButtonNORMAL_Click"/>
+                <Button x:Name="ButtonHARD" Grid.Column="2" Content="HARD" Click="ButtonHARD_Click"/>
+            </Grid>
+            <Separator Margin="0,10,0,10"/>
+            <Label Content="Size of Pairs:"/>
+            <Grid >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Slider TickPlacement="BottomRight" x:Name="SliderSOP" Grid.Column="0" IsSnapToTickEnabled="True" TickFrequency="1" ValueChanged="SliderSOP_ValueChanged" Margin="0,10,0,0"/>
+                <Label x:Name="LabelSOP" Width="50" Grid.Column="1" HorizontalContentAlignment="Center" FontSize="20" FontFamily="Algerian" Margin="0,0,0,0"/>
+            </Grid>
+            <Separator Margin="0,10,0,10"/>
+            <Label Content="Number of pairs:"/>
+            <Grid >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Slider TickPlacement="BottomRight" x:Name="SliderNOP" Grid.Column="0" IsSnapToTickEnabled="True" TickFrequency="1" Margin="0,10,0,0" ValueChanged="SliderNOP_ValueChanged"/>
+                <Label x:Name="LabelNOP" Width="50" Grid.Column="1" HorizontalContentAlignment="Center" FontSize="20" FontFamily="Algerian" Margin="0,0,0,0"  />
+            </Grid>
+            <Separator Margin="0,10,0,10"/>
+        </StackPanel>
+    </Grid>
+</Page>

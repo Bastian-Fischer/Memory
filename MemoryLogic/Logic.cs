@@ -5,6 +5,11 @@ namespace MemoryLogic
 {
     public class Logic
     {
+        private List<ScorePoint> mScore;
+        public List<ScorePoint> Score
+        {
+            get { return mScore; }
+        }
         private int mLive;
         public int Live
         {
@@ -25,13 +30,25 @@ namespace MemoryLogic
         public Card[] Gamefield {
             get { return mGamefield;}
         }
-        public Logic(int numberOfPairs = 10, int sizeOfPair = 2, int live = 5) {
+        public Logic(int numberOfPairs = 10, int sizeOfPair = 2) {
+            int live = numberOfPairs;
             if (live < 1) live = 1;
             if (numberOfPairs < 3) numberOfPairs = 3;
             if (sizeOfPair < 2) sizeOfPair = 2;
             mLive = live;
+            mScore = new();
             mTurnStack = new();
             CreateField(numberOfPairs,sizeOfPair);
+        }
+        public Logic(int live, int numberOfPairs = 10, int sizeOfPair = 2)
+        {
+            if (live < 1) live = 1;
+            if (numberOfPairs < 3) numberOfPairs = 3;
+            if (sizeOfPair < 2) sizeOfPair = 2;
+            mLive = live;
+            mScore = new();
+            mTurnStack = new();
+            CreateField(numberOfPairs, sizeOfPair);
         }
         private void CreateField(int numberOfPairs = 5, int sizeOfPair = 2) { 
             List<Card> CardListA = new();
@@ -68,8 +85,8 @@ namespace MemoryLogic
             {
                 return TurnResult.Invalid;
             }
+            
             if (mLive <= 0) return TurnResult.GameLose;
-
             //If TurnStack same size as SizeOfPair Turn End.
             if (mTurnStack.Count == mSizeOfPair){
                 for (int counter = 0;counter < mTurnStack.Count; counter++) {
@@ -78,7 +95,7 @@ namespace MemoryLogic
                     else
                     { 
                         if (mTurnStack[counter].CardId != lastCardId) isPair = false;
-                        lastCardId = mTurnStack[counter].CardId;
+                        lastCardId = mTurnStack[counter].CardId; 
                     }
                 }
                 for (int counter = 0; counter < mTurnStack.Count; counter++)
@@ -88,24 +105,23 @@ namespace MemoryLogic
                         mTurnStack[counter].SetFinished();
                     }
                     else
-                    {
-                        for (int counterTryCheck = 0; counterTryCheck < mTurnStack.Count; counterTryCheck++)
-                        {
-                            if (mTurnStack[counterTryCheck].Try >= 2) mLive--; //Live deduction if card try is over 2 trys.
-                            if (mLive == 0) return TurnResult.GameLose;
-                        }
+                    {                      
                         mTurnStack[counter].SetInvisible();
                     }
                 }
                 mTurnStack.Clear();
-
+                
                 foreach (var item in mGamefield)
                 {
                     if (!item.Finished) allCardsAreFinished = false;//testing if all Cards are Finished.
                 }
+                if(!isPair && mGamefield[position].Try >= 2)mLive--; //Live deduction if card try is over 2 trys.
+                if (mLive <= 0) return TurnResult.GameLose;
+                if (isPair) mScore.Add(ScorePoint.Point);
                 if (allCardsAreFinished)return TurnResult.GameWin;//Result Win if all cards are finished.
                 return (isPair)? TurnResult.PairFinished : TurnResult.TurnFinished;  //Result Turn Finished or Pair Finished.
-            } 
+            }
+            if (mLive <= 0) return TurnResult.GameLose;
             return TurnResult.Valid;
         }
     }
