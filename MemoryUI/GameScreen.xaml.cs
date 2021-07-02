@@ -33,8 +33,8 @@ namespace MemoryUI
         private MediaPlayer mBackgroundSound = new();
         
 
-        private List<string> mPictureIndex;
-        private List<string> mCardImageList;
+        private List<BitmapImage> mPictureIndex;
+        private List<BitmapImage> mCardImageList;
         private List<Image> mCardCoverList;
         private MemoryLogic.Logic mLogic;
         private Dictionary<Button, int> mButtonIsPosition = new();
@@ -278,16 +278,16 @@ namespace MemoryUI
             mCardImageList = new();
             Random rand = new();
 
-            foreach (string cardUri in MainMenuPage.Instance.CurrentTheme.CardList){
-                mPictureIndex.Add(cardUri);
+            foreach (BitmapImage cardBitmap in MainMenuPage.Instance.CurrentTheme.CardList){
+                mPictureIndex.Add(cardBitmap);
             }
             
             for (int counter = 0; counter < mNumberOfPairs; counter++)
             {
                 int typNumber = rand.Next(0, mPictureIndex.Count);
-                string uri = mPictureIndex[typNumber];
+                BitmapImage bitmap = mPictureIndex[typNumber];
                 mPictureIndex.RemoveAt(typNumber);
-                mCardImageList.Add(uri);
+                mCardImageList.Add(bitmap);
             }
         }
         private void GameOver(MemoryLogic.TurnResult turnresult) {

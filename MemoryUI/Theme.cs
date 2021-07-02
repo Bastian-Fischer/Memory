@@ -1,20 +1,22 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
+
 namespace MemoryUI
 {
     public class Theme
     {
-        public List<string> CardList { get; private set; }
-        public string GameBackground { get; private set; }
-        public string MenuBackground { get; private set; }
-        public string Thumbnail { get; private set; }
-        public string Point { get; private set; }
-        public string BigPoint { get; private set; }
-        public string Life { get; private set; }
-        public string TimeBarBigPoint { get; private set; }
-        public string TimeBarPoint { get; private set; }
-        public string TimeBarCritical { get; private set; }
-        public string Cover { get; private set; }
+        public List<BitmapImage> CardList { get; private set; }
+        public BitmapImage GameBackground { get; private set; }
+        public BitmapImage MenuBackground { get; private set; }
+        public BitmapImage Thumbnail { get; private set; }
+        public BitmapImage Point { get; private set; }
+        public BitmapImage BigPoint { get; private set; }
+        public BitmapImage Life { get; private set; }
+        public BitmapImage TimeBarBigPoint { get; private set; }
+        public BitmapImage TimeBarPoint { get; private set; }
+        public BitmapImage TimeBarCritical { get; private set; }
+        public BitmapImage Cover { get; private set; }
         public string Name { get; private set; }
         public string CardFlipSound { get; private set; }
         public string PointSound    { get; private set; }
@@ -22,17 +24,17 @@ namespace MemoryUI
         public string GameBackgroundSound { get; private set; }
         public Theme(
             string name,
-            List<string> cardList,
-            string gameBackground,
-            string menuBackground,
-            string thumbnail,
-            string point,
-            string bigPoint,
-            string life,
-            string timeBarBigPoint,
-            string timeBarPoint,
-            string timeBarCritical,
-            string cover,
+            List<BitmapImage> cardList,
+            BitmapImage gameBackground,
+            BitmapImage menuBackground,
+            BitmapImage thumbnail,
+            BitmapImage point,
+            BitmapImage bigPoint,
+            BitmapImage life,
+            BitmapImage timeBarBigPoint,
+            BitmapImage timeBarPoint,
+            BitmapImage timeBarCritical,
+            BitmapImage cover,
             string cardFlipSound,
             string pointSound,
             string bigPointSound,
@@ -56,7 +58,7 @@ namespace MemoryUI
             BigPointSound = bigPointSound;
             GameBackgroundSound = gameBackgroundSound;
         }
-        public string GetPoint(MemoryLogic.ScorePoint pointTyp) {
+        public BitmapImage GetPoint(MemoryLogic.ScorePoint pointTyp) {
             return (pointTyp == MemoryLogic.ScorePoint.Point) ? Point : BigPoint ;
         }
     }

@@ -89,27 +89,27 @@ namespace MemoryUI
 
             for (int categoryCounter = 1; categoryCounter < 6; categoryCounter++)
             {
-                List<string> cardList = new();
+                List<BitmapImage> cardList = new();
 
                 for (int typCounter = 1; typCounter < 31; typCounter++)
                 {
-                    cardList.Add(mSystemThemesDirectory+categoryCounter + " (" + typCounter + ").png");
+                    cardList.Add(LoadBitmapImage(mSystemThemesDirectory +categoryCounter + " (" + typCounter + ").png"));
                     
                 }
                 string name = categoryCounter switch { 1 => "Green Forrest", 2 => "Orange Forrest", 3 => "Purple Forrest", 4 => "Mint Green Forrest", 5 => "Cyan Forrest", _ => "" };
                 Theme theme = new(
                     name,
                     cardList,
-                    mSystemThemesDirectory + categoryCounter + " game_background.png",
-                    mSystemThemesDirectory + categoryCounter + " menu_background.png",
-                    mSystemThemesDirectory + categoryCounter + " thumb.png",
-                    mSystemThemesDirectory + "point.png",
-                    mSystemThemesDirectory + categoryCounter + " bigpoint.png",
-                    mSystemThemesDirectory + "life.png",
-                    mSystemThemesDirectory + "bonus_timebackground.png",
-                    mSystemThemesDirectory + "timebackground.png",
-                    mSystemThemesDirectory + "crit_timebackground.png",
-                    mSystemThemesDirectory + categoryCounter + " cover.png",
+                    LoadBitmapImage(mSystemThemesDirectory + categoryCounter + " game_background.png"),
+                    LoadBitmapImage(mSystemThemesDirectory + categoryCounter + " menu_background.png"),
+                    LoadBitmapImage(mSystemThemesDirectory + categoryCounter + " thumb.png"),
+                    LoadBitmapImage(mSystemThemesDirectory + "point.png"),
+                    LoadBitmapImage(mSystemThemesDirectory + categoryCounter + " bigpoint.png"),
+                    LoadBitmapImage(mSystemThemesDirectory + "life.png"),
+                    LoadBitmapImage(mSystemThemesDirectory + "bonus_timebackground.png"),
+                    LoadBitmapImage(mSystemThemesDirectory + "timebackground.png"),
+                    LoadBitmapImage(mSystemThemesDirectory + "crit_timebackground.png"),
+                    LoadBitmapImage(mSystemThemesDirectory + categoryCounter + " cover.png"),
                     "./System/cardflip.wav",
                     "./System/point.wav",
                     "./System/bigpoint.wav",
@@ -118,16 +118,17 @@ namespace MemoryUI
                 Themes.Add(name, theme);
             }
         }
-        public Image LoadImage(string fileName, Stretch stretch = Stretch.UniformToFill, UriKind uriKind = UriKind.Relative)
+        public Image LoadImage(BitmapImage resource, Stretch stretch = Stretch.UniformToFill)
         {
-            var position = new Uri(fileName, uriKind);
-            BitmapImage resource = new(position);
             Image image = new();
             image.Source = resource;
             image.Stretch = stretch;
             return image;
         }
-
+        public BitmapImage LoadBitmapImage(string fileName, UriKind uriKind = UriKind.RelativeOrAbsolute) {
+            var position = new Uri(fileName, uriKind);
+            return new(position);
+        }
         private void CommandStartGame_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             MessageBox.Show("Geht");

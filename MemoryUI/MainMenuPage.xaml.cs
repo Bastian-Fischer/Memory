@@ -45,8 +45,6 @@ namespace MemoryUI
 
         public Theme CurrentTheme;
 
-
-
         private int mNOPValue = 5;
         public int NumberOfPairsValue
         {
@@ -91,13 +89,11 @@ namespace MemoryUI
 
             SliderNOP.Minimum = mMinimumOfPairs;
             SliderNOP.Maximum = mMaximumOfPairs;
-            //SliderNOP.Value = mMinimumOfPairs;
-            //TextBoxNOP.Text = mMinimumOfPairs.ToString();
+
 
             SliderSOP.Minimum = mMinimumPairSize;
             SliderSOP.Maximum = mMaximumPairSize;
-            //SliderSOP.Value = mMinimumPairSize;
-            //TextBoxSOP.Text = mMinimumPairSize.ToString();
+
             ButtonEASY.Background = new SolidColorBrush(Colors.DarkGray);
             ButtonNORMAL.Background = new SolidColorBrush(Colors.LightGray);
             ButtonHARD.Background = new SolidColorBrush(Colors.DarkGray);
@@ -105,9 +101,6 @@ namespace MemoryUI
 
             CreateThemeListView();
         }
-
-   
-
         private void CreateThemeListView() {
             bool select = true;
             foreach (KeyValuePair<string,Theme> pair in MainWindow.Instance.Themes)
@@ -133,13 +126,6 @@ namespace MemoryUI
                 select = false;
             }
         }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            //GameScreen page = new();
-            //MainWindow.Instance.MainFrame.Navigate(page);
-        }
-        //TODO hier weiter
         private void SetDifficulty(Difficulty level){
             switch (level) {
                 case Difficulty.Easy: mDifficultyLevel = Difficulty.Easy; break;
@@ -148,19 +134,6 @@ namespace MemoryUI
                 default: mDifficultyLevel = Difficulty.Normal; break;
             }
         }
-
-        private void SliderSOP_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            //mSOPValue = (int)e.NewValue;
-            //LabelSOP.Content = e.NewValue.ToString();
-        }
-
-        private void SliderNOP_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            //mNOPValue = (int)e.NewValue;
-            //LabelNOP.Content = e.NewValue.ToString();
-        }
-
         private void ButtonEASY_Click(object sender, RoutedEventArgs e)
         {
             SetDifficulty(Difficulty.Easy);
