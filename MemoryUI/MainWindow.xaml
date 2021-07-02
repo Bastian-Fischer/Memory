@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:MemoryUI"
         mc:Ignorable="d"
         Title="Memory" Height="800" Width="1200">
-        <!-- WindowStyle="None" -->
+    <!-- WindowStyle="None" -->
     <Frame x:Name="MainFrame"
                NavigationUIVisibility="Hidden"/>
 

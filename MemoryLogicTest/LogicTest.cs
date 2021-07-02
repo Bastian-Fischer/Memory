@@ -45,7 +45,7 @@ namespace MemoryLogicTest
         public void LiveNotUnderOneOnStart()
         {
             Logic l = new(5,2,0);
-            Assert.IsTrue(l.Live > 0);
+            Assert.IsTrue(l.Life > 0);
         }
         [TestMethod]
         public void LiveDeductionAfterUseCardAgain() {
@@ -71,7 +71,7 @@ namespace MemoryLogicTest
             l.TurnStep(CardPositionB);
             l.TurnStep(CardPositionB);
             l.TurnStep(CardPositionC);
-            Assert.IsTrue(l.Live < 5);
+            Assert.IsTrue(l.Life < 5);
         }
         [TestMethod]
         public void PairVisibleAfterTurn() {

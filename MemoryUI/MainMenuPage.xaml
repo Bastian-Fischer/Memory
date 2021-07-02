@@ -5,9 +5,13 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:MemoryUI"
       mc:Ignorable="d" 
-      d:DesignHeight="600" d:DesignWidth="900"
+      d:DesignHeight="600" d:DesignWidth="900"  
       Title="MainMenuPage">
-
+    <Page.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.Close" Executed="CommandClose_Executed"/>
+        <CommandBinding Command="local:MenuCommands.StartGame" Executed="CommandStartGame_Executed"/>
+        <CommandBinding Command="local:MenuCommands.Information" Executed="CommandInformation_Executed"/>
+    </Page.CommandBindings>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -17,54 +21,149 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="60"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel x:Name="MenuList"  Grid.Column="0" Grid.Row="0" Grid.RowSpan="5" VerticalAlignment="Top">
-            <Button Click="Button_Click">
-                <Label Content="Start Game"/>
-            </Button>
-            <Button Click="Button_Click_1">
-                <Label Content="Quit"/>
-            </Button>
-        </StackPanel>
-        <StackPanel x:Name="Settings"  Grid.Column="1" Grid.Row="0" Grid.RowSpan="3" Grid.ColumnSpan="2" VerticalAlignment="Top" Margin="5">
-            <Label Content="SETTINGS"  Grid.Column="1" HorizontalContentAlignment="Center" FontSize="20" FontFamily="Algerian" Margin="0,0,0,0"  />
-            <Separator Margin="0,10,0,10"/>
+        <Grid x:Name="MenuBackground" Grid.Column="0" Grid.Row="0" Grid.RowSpan="5" Grid.ColumnSpan="5"  VerticalAlignment="Center" HorizontalAlignment="Center" />
+        <Rectangle Grid.Column="0"
+                   Grid.Row="0"
+                   Grid.RowSpan="5"
+                   Stroke="#33000000"/>
+        
+        <Rectangle Grid.Column="1"
+                   Grid.Row="0"
+                   Grid.ColumnSpan="4"
+                   Stroke="#33000000"/>
+        
+        <Rectangle Grid.Column="1" Grid.Row="0" Grid.RowSpan="5" Grid.ColumnSpan="2" Stroke="#33000000" />
+        <Rectangle Grid.Column="3" Grid.Row="0" Grid.RowSpan="5" Grid.ColumnSpan="2" Stroke="#33000000" />
+        <!-- Menu -->
+        
+        <DockPanel x:Name="MenuList"  Grid.Column="0" Grid.Row="0" Grid.RowSpan="5" Margin="10,10,10,5">
+            <Button Content="Start Game" DockPanel.Dock="Top" Height="35" FontSize="15" Command="local:MenuCommands.StartGame"/>
+            <Button Content="_Quit"  DockPanel.Dock="Bottom" Height="35" FontSize="15" Command="ApplicationCommands.Close" VerticalAlignment="Bottom" />
+            <Button Content="_Information" DockPanel.Dock="Bottom" Height="35" FontSize="15" Command="local:MenuCommands.Information" VerticalAlignment="Bottom" />
+        </DockPanel>
+        <!-- Settings -->
+        <Label Content="SETTINGS"
+               Grid.Column="1"
+               Grid.ColumnSpan="2"
+               HorizontalContentAlignment="Center"
+               VerticalAlignment="Center"
+               FontSize="20"
+               FontFamily="Algerian"
+               Margin="10,5,10,5"
+               Background="#4CFFFFFF"/>
+        
+        <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Auto"
+                      Grid.Column="1"
+                      Grid.Row="1"
+                      Grid.RowSpan="2"
+                      Grid.ColumnSpan="2"
+                      Background="#4CFFFFFF"
+                      Margin="10,5,10,5">
+            
+            <StackPanel x:Name="Settings"   VerticalAlignment="Top" Margin="10,5,10,5">
+                <Label Content="Difficulty:"  FontSize="15"/>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Button x:Name="ButtonEASY" Grid.Column="0" Content="EASY" Click="ButtonEASY_Click"/>
-                <Button x:Name="ButtonNORMAL" Grid.Column="1" Content="NORMAL" Click="ButtonNORMAL_Click"/>
-                <Button x:Name="ButtonHARD" Grid.Column="2" Content="HARD" Click="ButtonHARD_Click"/>
-            </Grid>
-            <Separator Margin="0,10,0,10"/>
-            <Label Content="Size of Pairs:"/>
+                    <Button x:Name="ButtonEASY"
+                            Grid.Column="0"
+                            Content="EASY"
+                            Click="ButtonEASY_Click"
+                            FontSize="15"/>
+                
+                    <Button x:Name="ButtonNORMAL"
+                            Grid.Column="1"
+                            Content="NORMAL"
+                            Click="ButtonNORMAL_Click"
+                            FontSize="15"/>
+                
+                    <Button x:Name="ButtonHARD"
+                            Grid.Column="2"
+                            Content="HARD"
+                            Click="ButtonHARD_Click"
+                            Background="#FFDDDDDD"
+                            FontSize="15"/>
+                </Grid>
+                <Separator Margin="0,10,0,10"/>
+                <Label Content="Size of Pairs:"  FontSize="15"/>
             <Grid >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="3*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Slider TickPlacement="BottomRight" x:Name="SliderSOP" Grid.Column="0" IsSnapToTickEnabled="True" TickFrequency="1" ValueChanged="SliderSOP_ValueChanged" Margin="0,10,0,0"/>
-                <Label x:Name="LabelSOP" Width="50" Grid.Column="1" HorizontalContentAlignment="Center" FontSize="20" FontFamily="Algerian" Margin="0,0,0,0"/>
+                
+                <Slider x:Name="SliderSOP"
+                        TickPlacement="BottomRight"
+                        Grid.Column="0"
+                        IsSnapToTickEnabled="True"
+                        TickFrequency="1"
+                        ValueChanged="SliderSOP_ValueChanged"
+                        Margin="0,10,0,0"
+                        Value="{Binding SizeOfPairsValue}"/>
+                
+                <TextBlock x:Name="TextBoxSOP"
+                       Width="50" Grid.Column="1"
+                       
+                       FontSize="20"
+                       FontFamily="Algerian"
+                       Margin="0,0,0,0"
+                       Text="{Binding SizeOfPairsValue}"/>
             </Grid>
             <Separator Margin="0,10,0,10"/>
-            <Label Content="Number of pairs:"/>
+                <Label Content="Number of pairs:"
+                       FontSize="15"/>
             <Grid >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="3*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Slider TickPlacement="BottomRight" x:Name="SliderNOP" Grid.Column="0" IsSnapToTickEnabled="True" TickFrequency="1" Margin="0,10,0,0" ValueChanged="SliderNOP_ValueChanged"/>
-                <Label x:Name="LabelNOP" Width="50" Grid.Column="1" HorizontalContentAlignment="Center" FontSize="20" FontFamily="Algerian" Margin="0,0,0,0"  />
+                    <Slider TickPlacement="BottomRight"
+                            x:Name="SliderNOP"
+                            Grid.Column="0"
+                            IsSnapToTickEnabled="True"
+                            TickFrequency="1"
+                            Margin="0,10,0,0"
+                            Value="{Binding NumberOfPairsValue}"/>
+                
+                    <TextBlock x:Name="TextBoxNOP"
+                           Width="50" Grid.Column="1"
+                           
+                           FontSize="20" FontFamily="Algerian"
+                           Margin="0,0,0,0"
+                           Text="{Binding NumberOfPairsValue}"/>
             </Grid>
             <Separator Margin="0,10,0,10"/>
+            
         </StackPanel>
+        </ScrollViewer>
+        <!-- Themes -->
+        <Label Content="THEMES"
+               Grid.Column="3"
+               Grid.ColumnSpan="2"
+               HorizontalContentAlignment="Center"
+               VerticalAlignment="Center" FontSize="20"
+               FontFamily="Algerian" Margin="10,5,10,5"
+               Background="#4CFFFFFF"/>
+               
+        <ListView x:Name="ThemeListView"
+                  Grid.Column="3"
+                  Grid.Row="1"
+                  Grid.RowSpan="4"
+                  Grid.ColumnSpan="2"
+                  VerticalAlignment="Top"
+                  Margin="10,5,10,5"
+                  SelectionChanged="ThemeListView_SelectionChanged"
+                  Background="#4CFFFFFF"
+                  BorderBrush="{x:Null}"/>
     </Grid>
 </Page>

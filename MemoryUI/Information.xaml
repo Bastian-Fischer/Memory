@@ -1,0 +1,27 @@
+﻿<Window x:Class="MemoryUI.Information"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MemoryUI"
+        mc:Ignorable="d"
+        Title="Information" Height="450" Width="800">
+    <Grid>
+        <ScrollViewer>
+            <StackPanel Orientation="Vertical"  >
+                <TextBlock Padding="10" Height="auto" TextWrapping="Wrap">
+                    <Bold>Bilder</Bold>
+                    <LineBreak/>
+                    <Run>Alle Bilder in dem Spiel, unterliegen dem Urheberrecht und sind nicht zur Weiterverarbeitung oder Nutzung außerhalb des Spieles freigegeben.</Run>
+                </TextBlock>
+                <TextBlock Padding="10" Height="auto" TextWrapping="Wrap">
+                    <Bold>Sounds und Musik</Bold>
+                    <LineBreak/>
+                    <Run>Alle Sounds und die Musik in dem Spiel, unterliegen dem Urheberrecht oder der</Run>
+                        <Hyperlink NavigateUri="https://creativecommons.org" RequestNavigate="Hyperlink_RequestNavigate">  CC0-Lizenz </Hyperlink>
+                        <Run>und sind nicht zur Weiterverarbeitung oder Nutzung außerhalb des Spieles freigegeben.</Run>
+                    </TextBlock>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>

@@ -6,12 +6,13 @@ namespace MemoryLogic
     public class Logic
     {
         private List<ScorePoint> mScore;
+        private ScorePoint mCurrentPointTyp;
         public List<ScorePoint> Score
         {
             get { return mScore; }
         }
         private int mLive;
-        public int Live
+        public int Life
         {
             get { return mLive; }
         }
@@ -40,6 +41,9 @@ namespace MemoryLogic
             mTurnStack = new();
             CreateField(numberOfPairs,sizeOfPair);
         }
+        public void SetScoreTyp(ScorePoint typ) {
+            mCurrentPointTyp = typ;
+        }
         public Logic(int live, int numberOfPairs = 10, int sizeOfPair = 2)
         {
             if (live < 1) live = 1;
@@ -49,6 +53,7 @@ namespace MemoryLogic
             mScore = new();
             mTurnStack = new();
             CreateField(numberOfPairs, sizeOfPair);
+            mCurrentPointTyp = ScorePoint.Point;
         }
         private void CreateField(int numberOfPairs = 5, int sizeOfPair = 2) { 
             List<Card> CardListA = new();
@@ -70,7 +75,9 @@ namespace MemoryLogic
             mSizeOfPair = sizeOfPair;
             mGamefield = gameField;
         }
-
+        public void AddDeath(int count) {
+            mLive -= count;
+        }
         public TurnResult TurnStep(int position)
         {
             //So many TurnSteps as sizeOfPair
@@ -117,7 +124,7 @@ namespace MemoryLogic
                 }
                 if(!isPair && mGamefield[position].Try >= 2)mLive--; //Live deduction if card try is over 2 trys.
                 if (mLive <= 0) return TurnResult.GameLose;
-                if (isPair) mScore.Add(ScorePoint.Point);
+                if (isPair) mScore.Add(mCurrentPointTyp);
                 if (allCardsAreFinished)return TurnResult.GameWin;//Result Win if all cards are finished.
                 return (isPair)? TurnResult.PairFinished : TurnResult.TurnFinished;  //Result Turn Finished or Pair Finished.
             }

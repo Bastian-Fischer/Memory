@@ -1,18 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace MemoryUI
@@ -25,42 +16,39 @@ namespace MemoryUI
         private int mLive;
         private int mLiveCounter;
         private int mScoreSum = 0;
-        private Frame mMainFrame;
-        private int mSOP;
-        private int mNOP;
+
+
         private List<MemoryLogic.ScorePoint> mScore;
         private MemoryLogic.TurnResult mResult;
         private MemoryLogic.Difficulty mDifficulty;
         private int mScoreCounter;
         Thickness mDistance = new();
-        private string mThemeName;
-        private string mThemesDirectory = "Assets/Themes/";
-        private string mImageDirectory;
-        private bool mGetScoreFree = true;
-        private DateTime mTimeGameStart; // Wird befüllt wenn das erste Feld umgedreht wird um die Startzeit des Spiels festzuhalten
-        private int mScoreElementCounter = 0;
-        private readonly DispatcherTimer mTimer; // Startet zeitbasiert Events. Hier wird er benutzt um die Uhrzeit im UI anzuzeigen.
-        public GameOver(Frame MainFrame, int sop, int nop, List<MemoryLogic.ScorePoint> score, MemoryLogic.TurnResult result, MemoryLogic.Difficulty difficulty, string theme, int live)
+
+        private int mScoreElementCounter;
+
+        //private bool mGetScoreFree = true;
+        //private DateTime mTimeGameStart;
+        private readonly DispatcherTimer mTimer;
+        public GameOver(List<MemoryLogic.ScorePoint> score, MemoryLogic.TurnResult result, MemoryLogic.Difficulty difficulty, int live)
         {
             InitializeComponent();
+            DifficultyLabel.Content = difficulty switch { MemoryLogic.Difficulty.Easy => "EASY", MemoryLogic.Difficulty.Normal => "NORMAL", MemoryLogic.Difficulty.Hard => "HARD", _=> "Error"};
             mScoreCounter = 0;
-            mMainFrame = MainFrame;
-            mSOP = sop;
-            mNOP = nop;
+
             mScore = score;
             mResult = result;
             mDifficulty = difficulty;
-            mThemeName = theme;
+
             mLive = live;
-            mImageDirectory = mThemesDirectory + mThemeName + "/";
+
             mDistance.Left = 0;
             mDistance.Right = 0;
             mDistance.Top = 0;
             mDistance.Bottom = 0;
-            Image background = CreateImage("background.png");
+            Image background = MainWindow.Instance.LoadImage(MainMenuPage.Instance.CurrentTheme.GameBackground);
             background.Margin = mDistance;
             BackgroundField.Children.Add(background);
-
+            mDifficulty = difficulty;
             GameOverTitle.Content = result switch {
                 MemoryLogic.TurnResult.GameWin => "VICTORY",
                 MemoryLogic.TurnResult.GameLose => "GAME OVER",
@@ -77,7 +65,7 @@ namespace MemoryUI
                DispatcherPriority.Render, // legt die priorität fest mit welcher der DispatcherTimer überprüft ob er starten muss
                (_, _) => CreateScore(), // der auszuführende befehl
                Dispatcher.CurrentDispatcher);
-            mTimer.Stop(); // hält den Timer an damit das UI nicht aktualisiert wird bevor das Spiel startet
+            //mTimer.Stop(); // hält den Timer an damit das UI nicht aktualisiert wird bevor das Spiel startet
         }
 
         private void CreateScore() {
@@ -86,8 +74,8 @@ namespace MemoryUI
             {
                 if (mScoreSum == mScoreCounter && mLive != mLiveCounter)
                 {
-                    image = CreateImage("live.png");
-                    mScoreSum += 300;
+                    image = MainWindow.Instance.LoadImage(MainMenuPage.Instance.CurrentTheme.Life);
+                    mScoreSum += mDifficulty switch { MemoryLogic.Difficulty.Easy => 30, MemoryLogic.Difficulty.Normal => 50, MemoryLogic.Difficulty.Hard => 70, _ => 0 };
                     mLiveCounter++;
                     image.Width = 40;
                     image.Height = 40;
@@ -98,12 +86,12 @@ namespace MemoryUI
                     switch (mScore[mScoreElementCounter++])
                     {
                         case MemoryLogic.ScorePoint.Point:
-                            image = CreateImage("point.png");
-                            mScoreSum += 500;
+                            image = MainWindow.Instance.LoadImage(MainMenuPage.Instance.CurrentTheme.Point);
+                            mScoreSum += mDifficulty switch { MemoryLogic.Difficulty.Easy => 50, MemoryLogic.Difficulty.Normal => 70, MemoryLogic.Difficulty.Hard => 90, _ => 0};
                             break;
                         case MemoryLogic.ScorePoint.BigPoint:
-                            image = CreateImage("bigpoint.png");
-                            mScoreSum += 700;
+                            image = MainWindow.Instance.LoadImage(MainMenuPage.Instance.CurrentTheme.BigPoint, Stretch.Fill); 
+                            mScoreSum += mDifficulty switch { MemoryLogic.Difficulty.Easy => 70, MemoryLogic.Difficulty.Normal => 90, MemoryLogic.Difficulty.Hard => 110, _ => 0 };
                             break;
                         default: break;
                     }
@@ -119,34 +107,14 @@ namespace MemoryUI
             else mTimer.Stop();
             
         }
-        private Image CreateImage(string fileName, Stretch stretch = Stretch.UniformToFill)
-        {
-            var position = new Uri(mImageDirectory + fileName, UriKind.Relative);
-            BitmapImage resource = new(position);
-            Image image = new();
-            image.Source = resource;
-            image.Stretch = stretch;
-            return image;
-        }
-
-
         private void reset_Click(object sender, RoutedEventArgs e)
         {
-            mMainFrame.Navigate(new GameScreen(mMainFrame, mSOP, mNOP));
+            MainWindow.Instance.MainFrame.Navigate(new GameScreen());
         }
 
         private void back_Click(object sender, RoutedEventArgs e)
         {
-            mMainFrame.Navigate(new MainMenuPage(mMainFrame));
-        }
-
-        private void getScore_Click(object sender, RoutedEventArgs e)
-        {
-            if (!mTimer.IsEnabled) // testet ob das Spiel gerade gestartet wurde
-            {
-                mTimeGameStart = DateTime.Now; // startzeit speichern
-                mTimer.Start(); // DispatcherTimer starten damit das UI die aktuelle Zeitdifferenz anzeigt
-            }
+            MainWindow.Instance.MainFrame.Navigate(new MainMenuPage());
         }
     }
 }

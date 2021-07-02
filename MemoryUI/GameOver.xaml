@@ -38,8 +38,8 @@
 
         </StackPanel>
         <StackPanel HorizontalAlignment="Center" Grid.Row="2" VerticalAlignment="Bottom">
-            <Button Content="GET SCORE" x:Name="getScore" Click="getScore_Click"/>
-            <Label Content="Score: 0" x:Name="ScoreLabel"  FontFamily="BankGothic Lt BT" FontSize="36"/>
+            <Label Content=" " x:Name="DifficultyLabel" FontFamily="BankGothic Lt BT" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Label Content="Score: 0" x:Name="ScoreLabel"  FontFamily="BankGothic Lt BT" FontSize="36" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         </StackPanel>
             <StackPanel x:Name="ScoreList" Grid.Row="3" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center"/>
     </Grid>
