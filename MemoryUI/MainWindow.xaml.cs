@@ -43,8 +43,25 @@ namespace MemoryUI
 
         private void GetAddons()
         {
+            List<Theme> AddonThemes = new();
 
-            List<BitmapImage> cards = new();
+            string _name;
+            List<BitmapImage> _Cards = new();
+            BitmapImage _gameBackground;
+            BitmapImage _menuBackground;
+            BitmapImage _thumbnail;
+            BitmapImage _point;
+            BitmapImage _bigPoint;
+            BitmapImage _life;
+            BitmapImage _timeBarBigPoint;
+            BitmapImage _timeBarPoint;
+            BitmapImage _timeBarCritical;
+            BitmapImage _cover;
+            string _cardFlipSound;
+            string _pointSound;
+            string _bigPointSound;
+            string _gameBackgroundSound;
+
             if (!Directory.Exists("addons"))
                 Directory.CreateDirectory("addons");
 

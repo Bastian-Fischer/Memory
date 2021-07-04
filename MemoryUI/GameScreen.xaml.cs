@@ -17,7 +17,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 namespace MemoryUI
 {
-    
+
     /// <summary>
     /// Interaction logic for GameScreen.xaml
     /// </summary>
@@ -27,46 +27,71 @@ namespace MemoryUI
         private int mNumberOfPairs = MainMenuPage.Instance.NumberOfPairsValue;
         private int mSizeOfPairs = MainMenuPage.Instance.SizeOfPairsValue;
 
-        private SoundPlayer mCardFlipSound = new(MainMenuPage.Instance.CurrentTheme.CardFlipSound);
-        private SoundPlayer mPointSound = new(MainMenuPage.Instance.CurrentTheme.PointSound);
-        private SoundPlayer mBigPointSound = new(MainMenuPage.Instance.CurrentTheme.BigPointSound);
+        //TODO  Sound zu mediaplayer + volume regler
+        private MediaPlayer mCardFlipSound = new();
+        private MediaPlayer mPointSound = new();
+        private MediaPlayer mBigPointSound = new();
         private MediaPlayer mBackgroundSound = new();
-        
+
+        public double EffectVolume
+        {
+            get => mPointSound.Volume;
+            set => SetEffectVolume(value);
+        }
+        public double MusicVolume
+        {
+            get => mBackgroundSound.Volume;
+            set => mBackgroundSound.Volume = value;
+        }
 
         private List<BitmapImage> mPictureIndex;
         private List<BitmapImage> mCardImageList;
         private List<Image> mCardCoverList;
         private MemoryLogic.Logic mLogic;
         private Dictionary<Button, int> mButtonIsPosition = new();
-        private int mCardsPerRow= 10;
+        private int mCardsPerRow = 10;
         private List<StackPanel> mRawList = new();
-        private int mCardSize;
+        private int mSizeForCards;
+        public int SizeForCards
+        {
+            get => mSizeForCards;
+            set => ChangeCardSize(value);
+        }
+
         private int mCardImageCounter;
         private Thickness mDistance = new();
-        private DateTime mTimeGameStart;
+        //private DateTime mTimeGameStart;
         private readonly DispatcherTimer mTimer;
         private double mGivenTime;
         private int mCurrentTimerTime;
         private double mTimerTimebarSteps;
         private Image timebackground;
         private int mLastPosition;
-        
+
         public GameScreen()
         {
+            MusicVolume = 0.2d;
+            EffectVolume = 0.2d;
+            mSizeForCards = 100;
             InitializeComponent();
             DataContext = this;
             mGivenTime = 10000;
-            mBackgroundSound.Open(new Uri(MainMenuPage.Instance.CurrentTheme.GameBackgroundSound , UriKind.RelativeOrAbsolute));
+            mCardFlipSound.Open(new Uri(MainMenuPage.Instance.CurrentTheme.CardFlipSound, UriKind.RelativeOrAbsolute));
+            mPointSound.Open(new Uri(MainMenuPage.Instance.CurrentTheme.PointSound, UriKind.RelativeOrAbsolute));
+            mBigPointSound.Open(new Uri(MainMenuPage.Instance.CurrentTheme.BigPointSound, UriKind.RelativeOrAbsolute));
+
+            mBackgroundSound.Open(new Uri(MainMenuPage.Instance.CurrentTheme.GameBackgroundSound, UriKind.RelativeOrAbsolute));
             mBackgroundSound.MediaEnded += LoopBackgroundSound;
             mBackgroundSound.Play();
+
             mCardImageList = new();
             mCardCoverList = new();
             mCardImageCounter = 0;
             if (mSizeOfPairs * mNumberOfPairs <= 20) mCardsPerRow = 5;
 
-            mCardSize = 100;
-            mLogic = new(mNumberOfPairs, mSizeOfPairs);
             
+            mLogic = new(mNumberOfPairs, mSizeOfPairs);
+
             mLastPosition = -1;
             mDistance.Left = 0;
             mDistance.Right = 0;
@@ -74,29 +99,43 @@ namespace MemoryUI
             mDistance.Bottom = 0;
             Image background = MainWindow.Instance.LoadImage(MainMenuPage.Instance.CurrentTheme.GameBackground);
             background.Margin = mDistance;
-            
+
             BackgroundField.Children.Add(background);
-            mDistance .Left = 5;
-            mDistance .Right = 5;
-            mDistance .Top = 5;
-            mDistance .Bottom = 5;
+            mDistance.Left = 5;
+            mDistance.Right = 5;
+            mDistance.Top = 5;
+            mDistance.Bottom = 5;
             ResetTimeCountDown();
             SetDifficulty();
             CreateImageList();
             CreateCoverList();
             CreateCardField();
-            
+
             LiveUpdate();
-            mTimerTimebarSteps =  mGivenTime / 500.0;
+            mTimerTimebarSteps = mGivenTime / 500.0;
 
             mTimer = new DispatcherTimer(
-              new TimeSpan(0, 0, 0, 0, 1), 
-              DispatcherPriority.Render, 
-              (_, _) => TimeCountDown(), 
+              new TimeSpan(0, 0, 0, 0, 1),
+              DispatcherPriority.Render,
+              (_, _) => TimeCountDown(),
               Dispatcher.CurrentDispatcher);
-            mTimer.Stop(); 
+            mTimer.Stop();
         }
-
+        private void ChangeCardSize(int size) 
+        {
+            mSizeForCards = size;
+            foreach ((Button button, _) in mButtonIsPosition)
+            {
+                button.Height = size;
+                button.Width = size;
+            }
+        }
+        private void SetEffectVolume(double volume) 
+        {
+            mCardFlipSound.Volume = volume;
+            mPointSound.Volume = volume;
+            mBigPointSound.Volume = volume;
+        }
         private void SetDifficulty() {
             switch (mDifficulty)
             {
@@ -224,8 +263,8 @@ namespace MemoryUI
             button.Click += CardButtonClick;
             button.MouseLeave += CardFocusLost;
             button.Content = ImagePanel;
-            button.Height = mCardSize;
-            button.Width = mCardSize;
+            button.Height = SizeForCards;
+            button.Width = SizeForCards;
             button.Margin = mDistance ;
             button.Background = new SolidColorBrush(Colors.DarkGray);
             button.Foreground = new SolidColorBrush(Colors.Black);
@@ -258,8 +297,16 @@ namespace MemoryUI
         {      
             if (ScoreField.Children.Count < mLogic.Score.Count)
             {
-                if (mLogic.Score.Last() == MemoryLogic.ScorePoint.Point) mPointSound.Play();
-                else mBigPointSound.Play();
+                if (mLogic.Score.Last() == MemoryLogic.ScorePoint.Point) 
+                { 
+                    mPointSound.Stop();
+                    mPointSound.Play();
+                }
+                else
+                {
+                    mBigPointSound.Stop();
+                    mBigPointSound.Play();
+                }
                 Image point = MainWindow.Instance.LoadImage(
                     mLogic.Score.Last()== MemoryLogic.ScorePoint.Point ? MainMenuPage.Instance.CurrentTheme.Point : MainMenuPage.Instance.CurrentTheme.BigPoint, 
                     Stretch.Fill
@@ -294,11 +341,13 @@ namespace MemoryUI
             if (turnresult == MemoryLogic.TurnResult.GameLose)
             {
                 mTimer.Stop();
+                mBackgroundSound.Stop();
                 MainWindow.Instance.MainFrame.Navigate(new GameOver(mLogic.Score, turnresult, mDifficulty, mLogic.Life));
             }
             if (turnresult == MemoryLogic.TurnResult.GameWin || mLogic.Score.Count == mNumberOfPairs)
             {
                 mTimer.Stop();
+                mBackgroundSound.Stop();
                 MainWindow.Instance.MainFrame.Navigate(new GameOver(mLogic.Score, MemoryLogic.TurnResult.GameWin, mDifficulty, mLogic.Life));
             }
 
@@ -308,13 +357,14 @@ namespace MemoryUI
 
             if (!mTimer.IsEnabled) 
             {
-                mTimeGameStart = DateTime.Now; 
+                //mTimeGameStart = DateTime.Now; 
                 mTimer.Start(); 
             }
             Button button = (Button)sender;
             int position = mButtonIsPosition[button];
             if (position != mLastPosition)
             {
+                mCardFlipSound.Stop();
                 mCardFlipSound.Play();
                 ResetTimeCountDown();
             }
