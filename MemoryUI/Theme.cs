@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
-using System.Windows.Controls;
+using System.IO;
+using System.IO.Compression;
 using System.Windows.Media.Imaging;
 
 namespace MemoryUI
 {
     public class Theme
     {
+        public bool SystemTheme;
         public List<BitmapImage> CardList { get; private set; }
         public BitmapImage GameBackground { get; private set; }
         public BitmapImage MenuBackground { get; private set; }
@@ -22,7 +24,9 @@ namespace MemoryUI
         public string PointSound    { get; private set; }
         public string BigPointSound { get; private set; }
         public string GameBackgroundSound { get; private set; }
+
         public Theme(
+            bool systemTheme,
             string name,
             List<BitmapImage> cardList,
             BitmapImage gameBackground,
@@ -41,6 +45,7 @@ namespace MemoryUI
             string gameBackgroundSound
             )
         {
+            SystemTheme = systemTheme;
             Name  = name;
             CardList = cardList;
             GameBackground = gameBackground;
@@ -60,6 +65,24 @@ namespace MemoryUI
         }
         public BitmapImage GetPoint(MemoryLogic.ScorePoint pointTyp) {
             return (pointTyp == MemoryLogic.ScorePoint.Point) ? Point : BigPoint ;
+        }
+
+        public void LoadThemeSounds() 
+        {
+            if (!SystemTheme) 
+            {
+                if (!Directory.Exists("System/Temp/")) _ = Directory.CreateDirectory("System/Temp/");
+                if (File.Exists("System/Temp/" + CardFlipSound)) File.Delete("System/Temp/" + CardFlipSound);
+                if (File.Exists("System/Temp/" + PointSound)) File.Delete("System/Temp/" + PointSound);
+                if (File.Exists("System/Temp/" + BigPointSound)) File.Delete("System/Temp/" + BigPointSound);
+                if (File.Exists("System/Temp/" + GameBackgroundSound)) File.Delete("System/Temp/" + GameBackgroundSound);
+                using (ZipArchive archive = ZipFile.Open("addons/"+Name+".mtp", ZipArchiveMode.Update)) {
+                    archive.GetEntry(CardFlipSound).ExtractToFile("System/Temp/" + CardFlipSound);
+                    archive.GetEntry(PointSound).ExtractToFile("System/Temp/" + PointSound);
+                    archive.GetEntry(BigPointSound).ExtractToFile("System/Temp/" + BigPointSound);
+                    archive.GetEntry(GameBackgroundSound).ExtractToFile("System/Temp/" + GameBackgroundSound);
+                }
+            }
         }
     }
 }

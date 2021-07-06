@@ -7,40 +7,65 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="GameOver">
-
+    <Page.CommandBindings>
+        <CommandBinding Command="local:MenuCommands.StartGame" Executed="CommandStartGame_Executed"/>
+        <CommandBinding Command="local:MenuCommands.Return" Executed="CommandReturn_Executed"/>
+    </Page.CommandBindings>
     <Grid>
-
-        <Grid.ColumnDefinitions>
-
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="5*"/>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="4*"/>
             <RowDefinition Height="5*"/>
         </Grid.RowDefinitions>
-        <Grid x:Name="BackgroundField" HorizontalAlignment="center" Grid.Row="0" Grid.RowSpan="4"/>
-        <Label x:Name="GameOverTitle" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Algerian" FontSize="72"/>
-        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,5">
-            <Button x:Name="reset" Content="RESET" Width="100" Click="reset_Click"></Button>
-            <Separator Width="20" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5" >
+        <Grid x:Name="BackgroundField"
+              HorizontalAlignment="center"
+              Grid.Row="0" Grid.RowSpan="4"/>
+        <Label x:Name="GameOverTitle"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Center"
+               FontFamily="Algerian"
+               FontSize="72"/>
+        <StackPanel Grid.Row="1"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    Margin="0,5,0,5">
+            <Button x:Name="reset"
+                    Content="RESET"
+                    Width="100"/>
+            <Separator Width="20" 
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       RenderTransformOrigin="0.5,0.5">
                 <Separator.RenderTransform>
                     <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
                         <RotateTransform Angle="90"/>
-                        <TranslateTransform/>
                     </TransformGroup>
                 </Separator.RenderTransform>
             </Separator>
-            <Button x:Name="back" Content="BACK" Width="100" Click="back_Click"/>
-
-
+            <Button x:Name="return"
+                    Content="RETURN"
+                    Width="100"/>
         </StackPanel>
-        <StackPanel HorizontalAlignment="Center" Grid.Row="2" VerticalAlignment="Bottom">
-            <Label Content=" " x:Name="DifficultyLabel" FontFamily="BankGothic Lt BT" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            <Label Content="Score: 0" x:Name="ScoreLabel"  FontFamily="BankGothic Lt BT" FontSize="36" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <StackPanel HorizontalAlignment="Center"
+                    Grid.Row="2"
+                    VerticalAlignment="Bottom">
+            <Label Content=" "
+                   x:Name="DifficultyLabel"
+                   FontFamily="BankGothic Lt BT"
+                   FontSize="24" HorizontalAlignment="Center"
+                   VerticalAlignment="Center"/>
+            <Label Content="Score: 0"
+                   x:Name="ScoreLabel" 
+                   FontFamily="BankGothic Lt BT"
+                   FontSize="36"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"/>
         </StackPanel>
-            <StackPanel x:Name="ScoreList" Grid.Row="3" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <StackPanel x:Name="ScoreList"
+                        Grid.Row="3"
+                        Orientation="Horizontal"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"/>
     </Grid>
 </Page>

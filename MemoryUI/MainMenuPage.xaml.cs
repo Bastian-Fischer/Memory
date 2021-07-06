@@ -1,67 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using MemoryLogic;
 namespace MemoryUI
 {
-    /// <summary>
-    /// Interaction logic for MainMenuPage.xaml
-    /// </summary>
     public partial class MainMenuPage : Page, INotifyPropertyChanged
     {
-
         public event PropertyChangedEventHandler PropertyChanged;
-
-
-        public static MainMenuPage mInstance;
-        public static MainMenuPage Instance
-        {
-            get
-            {
-                return mInstance;
-            }
-        }
-        private int mMinimumOfPairs = 5;
-        public int MinimumOfPairs { get { return mMinimumOfPairs; } }
-        private int mMaximumOfPairs = 20;
-        public int MaximumOfPairs { get { return mMaximumOfPairs; } }
-        private int mMinimumPairSize = 2;
-        public int MinimumPairSize { get { return mMinimumPairSize; } }
-        private int mMaximumPairSize = 5;
-        public int MaximumPairSize { get { return mMaximumPairSize; } }
-
+        public static MainMenuPage Instance { get; set; }
+        public int MinimumOfPairs { get; } = 5;
+        public int MaximumOfPairs { get; } = 20;
+        public int MinimumPairSize { get; } = 2;
+        public int MaximumPairSize { get; } = 5;
         public Theme CurrentTheme;
-
         private int mNOPValue = 5;
         public int NumberOfPairsValue
         {
-            get => mNOPValue; 
-            set 
+            get => mNOPValue;
+            set
             {
-                if (mNOPValue != value){
+                if (mNOPValue != value)
+                {
                     mNOPValue = value;
                     PropertyChanged(this, new PropertyChangedEventArgs(nameof(NumberOfPairsValue)));
                 }
             }
         }
-
         private int mSOPValue = 2;
-        public int SizeOfPairsValue 
-        {    
-        get { return mSOPValue; }
+        public int SizeOfPairsValue
+        {
+            get => mSOPValue;
             set
             {
                if (mSOPValue != value)
@@ -71,39 +42,28 @@ namespace MemoryUI
                 }
             }
         }
-
         private Difficulty mDifficultyLevel;
         public Difficulty DifficultyLevel { get { return mDifficultyLevel; } }
-
-
         private Dictionary<ListViewItem, Theme> ListItemIs;
         public MainMenuPage()
         {
-            
             InitializeComponent();
-            
             DataContext = this;
-            mInstance = this;
+            Instance = this;
             ListItemIs = new();
-            
-
-            SliderNOP.Minimum = mMinimumOfPairs;
-            SliderNOP.Maximum = mMaximumOfPairs;
-
-
-            SliderSOP.Minimum = mMinimumPairSize;
-            SliderSOP.Maximum = mMaximumPairSize;
-
+            SliderNOP.Minimum = MinimumOfPairs;
+            SliderNOP.Maximum = MaximumOfPairs;
+            SliderSOP.Minimum = MinimumPairSize;
+            SliderSOP.Maximum = MaximumPairSize;
             ButtonEASY.Background = new SolidColorBrush(Colors.DarkGray);
             ButtonNORMAL.Background = new SolidColorBrush(Colors.LightGray);
             ButtonHARD.Background = new SolidColorBrush(Colors.DarkGray);
             mDifficultyLevel = Difficulty.Normal;
-
             CreateThemeListView();
         }
         private void CreateThemeListView() {
             bool select = true;
-            foreach (KeyValuePair<string,Theme> pair in MainWindow.Instance.Themes)
+            foreach (var pair in MainWindow.Instance.Themes)
             {
                 StackPanel panel = new();
                 panel.Height = 120;
@@ -114,25 +74,24 @@ namespace MemoryUI
                 Image image;
                 image = new();
                 image = MainWindow.Instance.LoadImage(pair.Value.Thumbnail);
-                panel.Children.Add(label);
-                panel.Children.Add(image);
-                
-                
+                _ = panel.Children.Add(label);
+                _ = panel.Children.Add(image);
                 ListViewItem item= new();
                 item.Content = panel;
                 item.IsSelected = select;
                 ListItemIs.Add(item, pair.Value);
-                ThemeListView.Items.Add(item);
+                _ = ThemeListView.Items.Add(item);
                 select = false;
             }
         }
         private void SetDifficulty(Difficulty level){
-            switch (level) {
-                case Difficulty.Easy: mDifficultyLevel = Difficulty.Easy; break;
-                case Difficulty.Normal: mDifficultyLevel = Difficulty.Normal; break;
-                case Difficulty.Hard: mDifficultyLevel = Difficulty.Hard; break;
-                default: mDifficultyLevel = Difficulty.Normal; break;
-            }
+            mDifficultyLevel = level switch
+            {
+                Difficulty.Easy => Difficulty.Easy,
+                Difficulty.Normal => Difficulty.Normal,
+                Difficulty.Hard => Difficulty.Hard,
+                _ => Difficulty.Normal,
+            };
         }
         private void ButtonEASY_Click(object sender, RoutedEventArgs e)
         {
@@ -141,7 +100,6 @@ namespace MemoryUI
             ButtonNORMAL.Background = new SolidColorBrush(Colors.DarkGray);
             ButtonHARD.Background = new SolidColorBrush(Colors.DarkGray);
         }
-
         private void ButtonNORMAL_Click(object sender, RoutedEventArgs e)
         {
             SetDifficulty(Difficulty.Normal);
@@ -149,7 +107,6 @@ namespace MemoryUI
             ButtonNORMAL.Background = new SolidColorBrush(Colors.LightGray);
             ButtonHARD.Background = new SolidColorBrush(Colors.DarkGray);
         }
-
         private void ButtonHARD_Click(object sender, RoutedEventArgs e)
         {
             SetDifficulty(Difficulty.Hard);
@@ -164,7 +121,7 @@ namespace MemoryUI
             CurrentTheme = ListItemIs[item];
             MenuBackground.Children.Clear();
             MenuBackground.Children.Add(MainWindow.Instance.LoadImage(CurrentTheme.MenuBackground));
-            SliderNOP.Maximum = (mMaximumOfPairs > CurrentTheme.CardList.Count) ? CurrentTheme.CardList.Count : mMaximumOfPairs;
+            SliderNOP.Maximum = (MaximumOfPairs > CurrentTheme.CardList.Count) ? CurrentTheme.CardList.Count : MaximumOfPairs;
         }
         private void CommandClose_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -173,9 +130,8 @@ namespace MemoryUI
         private void CommandStartGame_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             GameScreen page = new();
-            MainWindow.Instance.MainFrame.Navigate(page);
+            _ = MainWindow.Instance.MainFrame.Navigate(page);
         }
-
         private void CommandInformation_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             Information InformationWindow = new();
